@@ -37,14 +37,14 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="px-5 pt-6 pb-4 border-b border-border">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center">
+          {/* <div className="w-7 h-7 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-          </div>
+          </div> */}
           <div>
-            <div className="font-display font-semibold text-ink text-sm leading-tight">Triage</div>
-            <div className="text-ink-3 text-[10px] font-mono tracking-widest uppercase">AI Support</div>
+            <div className="font-display font-semibold text-ink text-sm leading-tight">Axon</div>
+            <div className="text-ink-3 text-[10px] font-mono tracking-widest uppercase">Ticketing Support</div>
           </div>
         </div>
       </div>
@@ -60,11 +60,11 @@ export default function Sidebar() {
               className={clsx(
                 'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150',
                 active
-                  ? 'bg-accent/10 text-accent border border-accent/20'
+                  ? 'bg-[#e8a840]/20 text-[#e8a840] border border-[#e8a840]'
                   : 'text-ink-2 hover:text-ink hover:bg-surface-2'
               )}
             >
-              <span className={active ? 'text-accent' : 'text-ink-3'}>{item.icon}</span>
+              <span className={active ? 'text-[#e8a840]' : 'text-ink-3'}>{item.icon}</span>
               {item.label}
             </Link>
           )
@@ -74,7 +74,7 @@ export default function Sidebar() {
       {/* Bottom: user info */}
       <div className="px-4 py-4 border-t border-border">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent text-xs font-semibold flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-[#e8a840]/20 border border-[#e8a840] flex items-center justify-center text-[#e8a840] text-xs font-semibold flex-shrink-0">
             Z
           </div>
           <div className="min-w-0">

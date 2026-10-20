@@ -1,4 +1,4 @@
-# Triage — Frontend
+# Axon — Frontend
 
 Next.js 14 App Router frontend for the AI Ticket System.
 Currently runs with **mock data** — no backend needed to get started.
@@ -116,7 +116,7 @@ npm run lint         # Run ESLint
 ```
 
 ---
-
+<!-- 
 ## What to build next (your milestones)
 
 **This week — get comfortable:**
@@ -134,4 +134,4 @@ npm run lint         # Run ESLint
 **Week after — add features:**
 - [ ] Build the "Update Status" button on the ticket detail page
 - [ ] Add pagination to the ticket list
-- [ ] Show AI processing status with real-time polling
+- [ ] Show AI processing status with real-time polling -->

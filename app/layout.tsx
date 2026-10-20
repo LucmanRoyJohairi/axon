@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { DM_Sans, DM_Mono, Playfair_Display } from 'next/font/google'
+// 1. Replace Playfair_Display with Inter
+import { DM_Sans, DM_Mono, Inter } from 'next/font/google' 
 import './globals.css'
 
 const body = DM_Sans({
@@ -8,11 +9,11 @@ const body = DM_Sans({
   weight: ['300', '400', '500', '600'],
 })
 
-const display = Playfair_Display({
+// 2. Configure Inter to manage your display variable instead
+const display = Inter({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['400', '600'],
-  style: ['normal', 'italic'],
+  weight: ['400', '600', '700'],
 })
 
 const mono = DM_Mono({
@@ -22,7 +23,7 @@ const mono = DM_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Triage — AI Ticket System',
+  title: 'Axon Ticketing System',
   description: 'AI-powered support ticket triage',
 }
 

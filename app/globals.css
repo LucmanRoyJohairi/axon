@@ -62,3 +62,14 @@ body {
     @apply border border-border rounded-lg;
   }
 }
+/* Add this block at the very bottom of your globals.css file */
+
+/* 1. Global Reset to force Arial and remove Times New Roman everywhere */
+*, ::before, ::after {
+  font-family: Arial, ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+}
+
+/* 2. Preserve your code blocks and monospaced ticket layouts */
+code, pre, .font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace !important;
+}
