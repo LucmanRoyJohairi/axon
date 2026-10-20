@@ -68,12 +68,12 @@ export default function TicketDetailPage() {
             >
               <div className="card-inner p-4 border-l-2 border-l-accent/40">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-5 h-5 rounded bg-accent/15 border border-accent/25 flex items-center justify-center flex-shrink-0">
+                  <div className="w-5 h-5 rounded bg-accent/15 border border-[#e8a840] flex items-center justify-center flex-shrink-0">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   </div>
-                  <span className="text-xs font-semibold text-accent tracking-wide">AI Triage</span>
+                  <span className="text-xs font-semibold text-[#e8a840] tracking-wide">AI Triage</span>
                   <span className="text-ink-3 text-[10px] font-mono ml-auto">Claude</span>
                 </div>
 

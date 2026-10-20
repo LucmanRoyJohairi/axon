@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 // 1. Replace Playfair_Display with Inter
 import { DM_Sans, DM_Mono, Inter } from 'next/font/google' 
 import './globals.css'
+import Sidebar from '@/components/layout/Sidebar'
 
 const body = DM_Sans({
   subsets: ['latin'],
@@ -31,7 +32,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${body.variable} ${display.variable} ${mono.variable}`}>
       <body className="bg-bg text-ink font-sans antialiased min-h-screen">
-        {children}
+         <div className="flex min-h-screen">
+          <Sidebar />
+          <main className="flex-1 ml-56 min-h-screen">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   )
