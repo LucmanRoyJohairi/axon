@@ -217,7 +217,7 @@ function CreateTicketModal({ onClose, onCreated }: { onClose: () => void; onCrea
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="Brief description of the issue"
-              className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-ink-3 focus:outline-none focus:border-accent/50 transition-colors"
+              className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
             />
           </div>
           <div>
@@ -227,7 +227,7 @@ function CreateTicketModal({ onClose, onCreated }: { onClose: () => void; onCrea
               onChange={e => setDescription(e.target.value)}
               placeholder="Detailed explanation — the AI will analyze this to suggest a category and priority."
               rows={4}
-              className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-ink-3 focus:outline-none focus:border-accent/50 transition-colors resize-none"
+              className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors resize-none"
             />
           </div>
         </div>
