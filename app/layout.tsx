@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from 'next'
 import { DM_Sans, DM_Mono, Inter } from 'next/font/google' 
 import './globals.css'
@@ -27,9 +28,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${body.variable} ${display.variable} ${mono.variable}`}>
-      <body className="bg-bg text-ink font-sans antialiased min-h-screen">
-        {/* Sidebar and flex wrappers removed so login page can render full-screen */}
+    <html 
+      lang="en" 
+      className={`dark ${body.variable} ${display.variable} ${mono.variable}`}
+      style={{ colorScheme: 'dark', backgroundColor: '#09090b' }}
+    >
+      <body className="bg-zinc-900 text-ink font-sans antialiased min-h-screen">
         {children}
       </body>
     </html>

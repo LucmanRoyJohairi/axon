@@ -1,18 +1,19 @@
 'use client'
 
+'use client'
+
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { getTickets, createTicket } from '@/lib/api'
 import type { Ticket, TicketStatus, TicketPriority, TicketCategory } from '@/types'
 import { statusClass, priorityClass, categoryClass, STATUS_LABEL, PRIORITY_LABEL, CATEGORY_LABEL, timeAgo } from '@/lib/utils'
 import { createClient } from '@/utils/supabase/client'
-
-
 const STATUSES: TicketStatus[] = ['open', 'in_progress', 'resolved', 'closed']
 const PRIORITIES: TicketPriority[] = ['critical', 'high', 'medium', 'low']
 const CATEGORIES: TicketCategory[] = ['bug', 'feature', 'billing', 'support', 'other']
 
 export default function TicketsPage() {
+  const supabase = createClient() // Initialize browser-side Supabase client
+
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -22,14 +23,33 @@ export default function TicketsPage() {
     status?: string; priority?: string; category?: string
   }>({})
 
-  const load = useCallback(() => {
+  // Database fetch handler using conditional Supabase queries
+  const load = useCallback(async () => {
     setLoading(true)
-    getTickets(filters).then(res => {
-      setTickets(res.tickets)
-      setTotal(res.total)
+    try {
+      // 1. Establish the base select query
+      let query = supabase
+        .from('tickets')
+        .select('*', { count: 'exact' }) // Fetch exact row counts matching these conditions
+
+      // 2. Conditionally append strict column matching rules if values exist
+      if (filters.status) query = query.eq('status', filters.status)
+      if (filters.priority) query = query.eq('priority', filters.priority)
+      if (filters.category) query = query.eq('category', filters.category)
+
+      // 3. Apply systemic ordering rules (newest records first)
+      const { data, count, error } = await query.order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setTickets((data || []) as unknown as Ticket[])
+      setTotal(count || 0)
+    } catch (err: any) {
+      console.error('Error loading tickets from Supabase:', err.message)
+    } finally {
       setLoading(false)
-    })
-  }, [filters])
+    }
+  }, [filters, supabase])
 
   useEffect(() => { load() }, [load])
 
@@ -103,7 +123,9 @@ export default function TicketsPage() {
           ))
         ) : tickets.length === 0 ? (
           <div className="py-16 text-center text-ink-3 text-sm">
-            No tickets match your filters.
+            {Object.keys(filters).length > 0 
+              ? 'No tickets match your filters.' 
+              : 'No tickets created yet. Click "New Ticket" to get started!'}
           </div>
         ) : (
           tickets.map(ticket => (
@@ -122,6 +144,7 @@ export default function TicketsPage() {
     </div>
   )
 }
+
 
 function TicketRow({ ticket }: { ticket: Ticket }) {
   return (

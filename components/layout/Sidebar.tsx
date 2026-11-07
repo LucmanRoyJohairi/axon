@@ -56,7 +56,7 @@ export default function Sidebar() {
       
       // Refresh forces Next.js to fetch a fresh layout state from the server
       router.refresh() 
-      router.push('/')
+      router.push('/login')
     } catch (err: any) {
       console.error('Sign out error:', err.message)
     } finally {
