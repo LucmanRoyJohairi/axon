@@ -86,11 +86,37 @@ export default function LoginPage() {
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
+{/* Separator Divider */}
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border/50"></div>
+            </div>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+              <span className="bg-zinc-900 px-3 text-ink-3">Or</span>
+            </div>
+          </div>
 
+          {/* Guest Mode Action Button */}
+          <button
+            type="button"
+            className="w-full py-2.5 bg-transparent border border-border/80 text-ink-2 text-sm font-medium rounded-lg hover:bg-white/5 hover:text-white transition-colors flex items-center justify-center gap-2"
+          >
+            <svg 
+              xmlns="http://w3.org" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              strokeWidth={1.8} 
+              stroke="currentColor" 
+              className="w-4 h-4 text-ink-3"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+            Continue as Guest
+          </button>
 
-          <p className="text-center text-xs text-ink-3 mt-4">
+          {/* <p className="text-center text-xs text-ink-3 mt-4">
             Mock mode: any email + password works
-          </p>
+          </p> */}
         </div>
 
       </div>

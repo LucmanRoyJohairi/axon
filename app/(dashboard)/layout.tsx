@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 // 1. Replace Playfair_Display with Inter
 import { DM_Sans, DM_Mono, Inter } from 'next/font/google' 
-import './globals.css'
+// import '@/app/globals.css'
 import Sidebar from '@/components/layout/Sidebar'
 
 const body = DM_Sans({
