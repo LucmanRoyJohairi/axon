@@ -57,7 +57,7 @@ export default function LoginPage() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-ink-3 focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
             <div>
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full bg-surface-2 border border-border rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-ink-3 focus:outline-none focus:border-accent/50 transition-colors"
+                className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
 
@@ -86,6 +86,7 @@ export default function LoginPage() {
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
+
 
           <p className="text-center text-xs text-ink-3 mt-4">
             Mock mode: any email + password works

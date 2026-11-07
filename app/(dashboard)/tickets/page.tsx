@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { getTickets, createTicket } from '@/lib/api'
 import type { Ticket, TicketStatus, TicketPriority, TicketCategory } from '@/types'
 import { statusClass, priorityClass, categoryClass, STATUS_LABEL, PRIORITY_LABEL, CATEGORY_LABEL, timeAgo } from '@/lib/utils'
+import { createClient } from '@/utils/supabase/client'
+
 
 const STATUSES: TicketStatus[] = ['open', 'in_progress', 'resolved', 'closed']
 const PRIORITIES: TicketPriority[] = ['critical', 'high', 'medium', 'low']
@@ -194,9 +196,40 @@ function CreateTicketModal({ onClose, onCreated }: { onClose: () => void; onCrea
   async function handleSubmit() {
     if (!title.trim() || !description.trim()) return
     setSubmitting(true)
-    await createTicket({ title, description })
-    onCreated()
+
+    try {
+      const supabase = createClient()
+
+      // 1. Fetch the currently logged-in user
+      const { data: { user } } = await supabase.auth.getUser()
+
+      // 2. Insert into the database using your new 'description' column
+      const { error } = await supabase
+        .from('tickets')
+        .insert({
+          title: title.trim(),
+          description: description.trim(), // Now mapping directly to your DB field!
+          status: 'open',                  // Default status before your AI auto-triage kicks in
+          priority: 'pending',             // Fallback priority state
+          creator_id: user?.id || null     // Dynamically links the ticket to the current user
+        })
+
+      if (error) throw error
+
+      // 3. Clear inputs and close modal on success
+      setTitle('')
+      setDescription('')
+      onCreated()
+      onClose()
+      
+    } catch (error: any) {
+      console.error('Error creating ticket:', error.message)
+      alert(`Failed to create ticket: ${error.message}`)
+    } finally {
+      setSubmitting(false)
+    }
   }
+
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
