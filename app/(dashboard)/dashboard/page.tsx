@@ -58,6 +58,7 @@ export default function DashboardPage() {
         setStats({
           total_tickets: total,
           open_tickets: open,
+          resolved_tickets: 0,
           in_progress_tickets: inProgress,
           ai_processed_tickets: aiProcessed,
           tickets_by_priority: priorityBreakdown,
