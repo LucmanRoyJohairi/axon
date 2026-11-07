@@ -2,23 +2,33 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { login } from '@/lib/api'
+import { createClient } from '@/utils/supabase/client' // Import your client utility
 
 export default function LoginPage() {
   const router = useRouter()
+  const supabase = createClient() // Initialize the browser client
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  // Standard Email/Password Sign-In
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
+    
     try {
-      const data = await login(email, password)
-      localStorage.setItem('token', data.access_token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (authError) throw authError
+
+      // Note: @supabase/ssr automatically sets the auth cookies. 
+      // You no longer need to write manually to localStorage.
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message ?? 'Login failed')
@@ -27,14 +37,31 @@ export default function LoginPage() {
     }
   }
 
+  // Guest Mode Sign-In
+  async function handleGuestSignIn() {
+    setError(null)
+    setLoading(true)
+
+    try {
+      const { data, error: guestError } = await supabase.auth.signInAnonymously()
+
+      if (guestError) throw guestError
+
+      // Anonymous session cookies are automatically managed here too.
+      router.push('/dashboard')
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to start guest session')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-
       {/* Background accent glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-sm opacity-0 animate-fade-up" style={{ animationFillMode: 'forwards' }}>
-
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-accent/10 border border-accent/25 mb-4">
@@ -57,6 +84,7 @@ export default function LoginPage() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
+                disabled={loading}
                 className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
@@ -68,6 +96,7 @@ export default function LoginPage() {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                disabled={loading}
                 className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
               />
             </div>
@@ -83,10 +112,11 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full py-2.5 bg-accent text-bg text-sm font-semibold rounded-lg hover:bg-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors mt-2"
             >
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading && !email ? 'Processing…' : 'Sign in'}
             </button>
           </form>
-{/* Separator Divider */}
+
+          {/* Separator Divider */}
           <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border/50"></div>
@@ -99,7 +129,9 @@ export default function LoginPage() {
           {/* Guest Mode Action Button */}
           <button
             type="button"
-            className="w-full py-2.5 bg-transparent border border-border/80 text-ink-2 text-sm font-medium rounded-lg hover:bg-white/5 hover:text-white transition-colors flex items-center justify-center gap-2"
+            onClick={handleGuestSignIn}
+            disabled={loading}
+            className="w-full py-2.5 bg-transparent border border-border/80 text-ink-2 text-sm font-medium rounded-lg hover:bg-white/5 hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-40"
           >
             <svg 
               xmlns="http://w3.org" 
@@ -111,14 +143,9 @@ export default function LoginPage() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
-            Continue as Guest
+            {loading && !email ? 'Creating Guest Session…' : 'Continue as Guest'}
           </button>
-
-          {/* <p className="text-center text-xs text-ink-3 mt-4">
-            Mock mode: any email + password works
-          </p> */}
         </div>
-
       </div>
     </div>
   )
