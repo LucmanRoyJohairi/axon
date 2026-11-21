@@ -39,3 +39,17 @@ export interface DashboardStats {
   tickets_by_priority: Record<string, number>
   tickets_by_category: Record<string, number>
 }
+
+export interface TicketListResponse {
+  tickets: Ticket[]
+  total: number
+  page: number
+  page_size: number
+}
+
+export interface AuthToken {
+  access_token: string
+  token_type: string
+  user: User
+}
+
