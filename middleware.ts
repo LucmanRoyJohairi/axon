@@ -2,6 +2,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PROTECTED_PREFIXES = ['/dashboard', '/tickets']
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -24,18 +26,20 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // 1. Get the current user session safely from Supabase 
   const { data: { user } } = await supabase.auth.getUser()
+  const { pathname } = request.nextUrl
 
-  // 2. If the user is logged out and trying to look at dashboard routes, bounce them back to login page
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+  const isProtected = PROTECTED_PREFIXES.some(
+    prefix => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  )
+
+  if (!user && isProtected) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login' // Redirect to root login page
+    url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // 3. Optional: If a user IS logged in, don't let them go back to the login page
-  if (user && request.nextUrl.pathname === '/login') {
+  if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
@@ -46,7 +50,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Applies middleware rule filtering across all application sub-paths
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
