@@ -6,6 +6,23 @@ const PROTECTED_PREFIXES = ['/dashboard', '/tickets']
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
+  const { pathname } = request.nextUrl
+
+  const isDevBypassAllowed =
+    process.env.NODE_ENV === 'development' &&
+    process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === 'true'
+
+  const hasDevBypassCookie = request.cookies.get('axon-dev-mode')?.value === '1'
+
+  // Skip Supabase auth completely in local dev bypass mode
+  if (isDevBypassAllowed && hasDevBypassCookie) {
+    if (pathname === '/login') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
+    return supabaseResponse
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,7 +44,6 @@ export async function middleware(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
-  const { pathname } = request.nextUrl
 
   const isProtected = PROTECTED_PREFIXES.some(
     prefix => pathname === prefix || pathname.startsWith(`${prefix}/`)

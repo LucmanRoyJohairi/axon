@@ -2,58 +2,72 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/supabase/client' // Import your client utility
+import { createClient } from '@/utils/supabase/client'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 
 export default function LoginPage() {
   const router = useRouter()
-  const supabase = createClient() // Initialize the browser client
+  const supabase = createClient()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loadingMode, setLoadingMode] = useState<'password' | 'guest' | null>(null)
+
+  const isDevBypassEnabled =
+    process.env.NODE_ENV === 'development' &&
+    process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === 'true'
+
+  const isLoading = loadingMode !== null
 
   // Standard Email/Password Sign-In
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    setLoading(true)
-    
+    setLoadingMode('password')
+
     try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
+      const { error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
-
       if (authError) throw authError
 
-      // Note: @supabase/ssr automatically sets the auth cookies. 
-      // You no longer need to write manually to localStorage.
+      router.refresh()
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message ?? 'Login failed')
     } finally {
-      setLoading(false)
+      setLoadingMode(null)
     }
   }
 
-  // Guest Mode Sign-In
+  // Guest Mode Sign-In (creates anonymous Supabase session)
   async function handleGuestSignIn() {
     setError(null)
-    setLoading(true)
+    setLoadingMode('guest')
 
     try {
-      const { data, error: guestError } = await supabase.auth.signInAnonymously()
-
+      const { error: guestError } = await supabase.auth.signInAnonymously()
       if (guestError) throw guestError
 
-      // Anonymous session cookies are automatically managed here too.
+      router.refresh()
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message ?? 'Failed to start guest session')
     } finally {
-      setLoading(false)
+      setLoadingMode(null)
     }
+  }
+
+  // Local Dev Mode Bypass (no Supabase user or guest account created)
+  function handleDevBypass() {
+    document.cookie = 'axon-dev-mode=1; path=/; max-age=86400; SameSite=Lax'
+    router.refresh()
+    router.push('/dashboard')
   }
 
   return (
@@ -73,31 +87,31 @@ export default function LoginPage() {
           <p className="text-ink-3 text-sm mt-1">AI-powered support tickets</p>
         </div>
 
-        {/* Card */}
-        <div className="card p-6">
+        {/* Main Card */}
+        <Card className="bg-surface border-border rounded-xl p-6 gap-0">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-ink-2 mb-1.5">Email</label>
-              <input
+              <Input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                disabled={loading}
-                className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
+                disabled={isLoading}
+                className="bg-surface-2 border-border text-ink placeholder:text-ink-3"
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-ink-2 mb-1.5">Password</label>
-              <input
+              <Input
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                disabled={loading}
-                className="w-full bg-zinc-800 border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-accent/50 transition-colors"
+                disabled={isLoading}
+                className="bg-surface-2 border-border text-ink placeholder:text-ink-3"
               />
             </div>
 
@@ -107,45 +121,73 @@ export default function LoginPage() {
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
-              disabled={loading}
-              className="w-full py-2.5 bg-accent text-bg text-sm font-semibold rounded-lg hover:bg-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors mt-2"
+              disabled={isLoading}
+              className="w-full bg-accent text-bg text-sm font-semibold hover:bg-amber-300 mt-2"
             >
-              {loading && !email ? 'Processing…' : 'Sign in'}
-            </button>
+              {loadingMode === 'password' ? 'Signing in…' : 'Sign in'}
+            </Button>
           </form>
 
           {/* Separator Divider */}
           <div className="relative my-5">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border/50"></div>
+              <div className="w-full border-t border-border/50" />
             </div>
             <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
-              <span className="bg-zinc-900 px-3 text-ink-3">Or</span>
+              <span className="bg-surface px-3 text-ink-3">Or</span>
             </div>
           </div>
 
           {/* Guest Mode Action Button */}
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={handleGuestSignIn}
-            disabled={loading}
-            className="w-full py-2.5 bg-transparent border border-border/80 text-ink-2 text-sm font-medium rounded-lg hover:bg-white/5 hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-40"
+            disabled={isLoading}
+            className="w-full border-border bg-transparent text-ink-2 hover:bg-surface-2 hover:text-ink"
           >
-            <svg 
-              xmlns="http://w3.org" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              strokeWidth={1.8} 
-              stroke="currentColor" 
+            <svg
+              xmlns="http://w3.org"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.8}
+              stroke="currentColor"
               className="w-4 h-4 text-ink-3"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
-            {loading && !email ? 'Creating Guest Session…' : 'Continue as Guest'}
-          </button>
-        </div>
+            {loadingMode === 'guest' ? 'Creating Guest Session…' : 'Continue as Guest'}
+          </Button>
+        </Card>
+
+        {/* Local Development Bypass Panel */}
+        {isDevBypassEnabled && (
+          <div className="mt-4 rounded-xl border border-accent/25 bg-accent/5 px-4 py-3 text-xs text-ink-2 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-accent font-semibold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-slow" />
+                Development Mode
+              </span>
+              <Badge variant="outline" className="border-accent/30 text-accent font-mono text-[10px] py-0">
+                LOCAL ONLY
+              </Badge>
+            </div>
+            <p className="text-ink-3 leading-relaxed">
+              Bypass Supabase auth locally without creating a user or guest account.
+            </p>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleDevBypass}
+              disabled={isLoading}
+              className="w-full bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25 font-medium"
+            >
+              Enter Dev Mode →
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
