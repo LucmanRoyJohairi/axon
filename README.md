@@ -128,8 +128,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 # FastAPI Backend URL (default: http://localhost:8000/api/v1)
 NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 
-# Optional: Enable one-click local dev login without creating a Supabase user
-NEXT_PUBLIC_DEV_BYPASS_AUTH=true
+<!-- # Optional: Enable one-click local dev login without creating a Supabase user
+NEXT_PUBLIC_DEV_BYPASS_AUTH=true -->
 ```
 
 ### 4. Run the Development Server
