@@ -1,137 +1,190 @@
-# Axon — Frontend
+# ⚡ Axon — AI-Powered Support Ticket Triage
 
-Next.js 14 App Router frontend for the AI Ticket System.
-Currently runs with **mock data** — no backend needed to get started.
+> A modern, dark-mode support ticket dashboard and triage interface built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, **shadcn/ui**, **Supabase**, and **FastAPI**.
 
 ---
 
-## Getting Started (do this first)
+## ✨ Features
 
-### 1. Install Node.js
+- **📊 Real-Time Triage Dashboard**
+  - Live queue metrics (*Total*, *Open*, *In Progress*, and *AI Processed* tickets).
+  - Visual priority (`Critical`, `High`, `Medium`, `Low`) and category (`Bug`, `Feature`, `Billing`, `Support`, `Other`) breakdown charts.
+  - Recent tickets feed with inline AI summaries and processing indicators.
 
-If you don't have it yet:
-- Download from https://nodejs.org (pick the LTS version)
-- Verify it works: `node -v` and `npm -v` in your terminal
+- **🤖 FastAPI AI Triage Integration**
+  - Asynchronous background triage pipeline powered by **FastAPI** + LLM classification (Claude).
+  - Automatically summarizes ticket descriptions and assigns `ai_category` and `ai_priority` while tracking `ai_processed` status in Supabase.
+  - Sidebar worker status indicator (`AI Worker Offline / Standby` vs. `AI Triage Active`).
 
-### 2. Install dependencies
+- **🎫 Ticket Management & Filtering**
+  - Filterable ticket queue by **Status**, **Priority**, and **Category**.
+  - Detailed ticket inspection view with AI triage summary cards, metadata sidebar, timeline tracking, and one-click status updates (*Open*, *In Progress*, *Resolved*).
+  - **Create Ticket Dialog** supporting automatic AI triage or optional manual category/priority overrides.
 
-Open your terminal, `cd` into this folder, then:
+- **🔐 Flexible Authentication & Local Sandbox**
+  - **Email & Password Sign-In** backed by `@supabase/ssr` cookie sessions and route protection (`middleware.ts`).
+  - **Anonymous Guest Sessions** (`signInAnonymously`) for frictionless demos.
+  - **Local Development Bypass** (`NEXT_PUBLIC_DEV_BYPASS_AUTH=true`) paired with an interactive `sessionStorage` mock-data sandbox and one-click **Reset Demo Data**.
 
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend Framework** | [Next.js 16](https://nextjs.org) (App Router, Turbopack) |
+| **UI & Language** | [React 19](https://react.dev) & TypeScript |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com) (`@theme inline`) |
+| **Component Primitives** | [shadcn/ui](https://shadcn.com) (Base UI primitives) |
+| **Backend & AI Worker** | [FastAPI](https://tiangolo.com) (Python REST API & background triage worker) |
+| **Auth & Database** | [Supabase](https://supabase.com) (PostgreSQL, `@supabase/ssr`, `@supabase/supabase-js`) |
+
+---
+
+## 🏗️ System Architecture
+
+```text
+┌─────────────────────┐        Auth & Queries        ┌─────────────────────┐
+│   Next.js Frontend  │ ◄──────────────────────────► │      Supabase       │
+│  (App Router + UI)  │                              │ (Auth + PostgreSQL) │
+└──────────┬──────────┘                              └──────────▲──────────┘
+           │                                                    │
+           │ REST API (/api/v1)                                 │ Updates AI fields
+           ▼                                                    │ (`ai_summary`,
+┌─────────────────────┐                                         │  `ai_priority`,
+│   FastAPI Backend   │ ────────────────────────────────────────┘  `ai_category`)
+│  (AI Triage Worker) │
+└─────────────────────┘
+```
+
+---
+
+## 📁 Project Structure
+
+```text
+triage-frontend/
+├── app/
+│   ├── (dashboard)/
+│   │   ├── dashboard/page.tsx       # Analytics overview, stat cards & breakdown charts
+│   │   ├── tickets/
+│   │   │   ├── page.tsx             # Filterable ticket queue & creation trigger
+│   │   │   └── [id]/page.tsx        # Single ticket view, AI triage card & status actions
+│   │   └── layout.tsx               # Authenticated shell with fixed Sidebar
+│   ├── login/page.tsx               # Email/password, Guest & Local Dev Mode login
+│   ├── globals.css                  # Tailwind v4 theme tokens & custom dark palette
+│   ├── layout.tsx                   # Root HTML/Body & Google Fonts (DM Sans, Inter, DM Mono)
+│   └── page.tsx                     # Root redirect to /dashboard
+├── components/
+│   ├── layout/
+│   │   ├── Sidebar.tsx              # Navigation shell, live queue counts & user footer
+│   │   ├── SidebarNav.tsx           # Workspace links, queue quick-views & AI worker status
+│   │   └── SignOutDialog.tsx        # Session sign-out confirmation modal
+│   ├── tickets/
+│   │   ├── CreateTicketDialog.tsx   # Modal form with optional manual priority/category
+│   │   ├── RecentTicketsTable.tsx   # Dashboard recent tickets card
+│   │   ├── TicketAiCard.tsx         # AI summary & classification card
+│   │   ├── TicketFilters.tsx        # Status, priority & category filter bar
+│   │   ├── TicketRow.tsx            # Reusable ticket list item
+│   │   └── TicketSidebar.tsx        # Detail metadata, timeline & status update actions
+│   └── ui/                          # shadcn/ui primitives & custom dashboard skeletons
+├── lib/
+│   ├── api.ts                       # FastAPI REST client (`/api/v1` endpoints)
+│   ├── mock-data.ts                 # Relative-timestamp sample tickets for sandbox mode
+│   ├── tickets.ts                   # Unified data layer (Supabase + Guest/Dev sandbox)
+│   └── utils.ts                     # `cn()` helper, date formatters & badge class maps
+├── types/
+│   └── index.ts                     # Core TypeScript interfaces (`Ticket`, `DashboardStats`)
+├── utils/supabase/
+│   ├── client.ts                    # Browser Supabase client
+│   └── server.ts                    # Server SSR Supabase client
+└── middleware.ts                    # Session validation & route protection
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- **Node.js** `20.9+`
+- **npm** (or `pnpm` / `yarn`)
+- A **Supabase** project (optional if using Local Dev Mode)
+- **FastAPI Backend** running locally or deployed (optional — frontend runs standalone with Supabase or sandbox mode)
+
+### 2. Installation
 ```bash
+git clone <your-repository-url>
+cd triage-frontend
 npm install
 ```
 
-This reads `package.json` and downloads everything into `node_modules/`. Takes ~30 seconds.
+### 3. Environment Variables
+Create a `.env.local` file in the project root:
 
-### 3. Run the dev server
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
+# FastAPI Backend URL (default: http://localhost:8000/api/v1)
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+
+# Optional: Enable one-click local dev login without creating a Supabase user
+NEXT_PUBLIC_DEV_BYPASS_AUTH=true
+```
+
+### 4. Run the Development Server
 ```bash
 npm run dev
 ```
-
-Open your browser to **http://localhost:3000**
-
-You should see the dashboard with mock ticket data. That's it — you're running.
+Open [http://localhost:3000](http://localhost:3000) in your browser. Use **Enter Dev Mode →** or **Continue as Guest** on the login screen to explore the pre-seeded mock ticket sandbox immediately.
 
 ---
 
-## What you're looking at
+## 🔌 FastAPI Backend Endpoints (`/api/v1`)
 
-```
-app/
-├── (app)/               ← Route group — adds the sidebar layout
-│   ├── layout.tsx       ← Sidebar wraps all pages inside here
-│   ├── dashboard/
-│   │   └── page.tsx     ← /dashboard — stats + recent tickets
-│   └── tickets/
-│       ├── page.tsx     ← /tickets — filterable list
-│       └── [id]/
-│           └── page.tsx ← /tickets/abc123 — ticket detail
-├── login/
-│   └── page.tsx         ← /login
-├── layout.tsx           ← Root layout — fonts, global CSS
-└── globals.css          ← Design tokens (colors, spacing)
+The frontend client (`lib/api.ts`) is structured to communicate with the following FastAPI routes:
 
-components/
-├── layout/
-│   └── Sidebar.tsx      ← Left nav
-└── (more components go here as you build)
-
-lib/
-├── api.ts               ← All API calls — mock now, real later
-├── mock-data.ts         ← Fake tickets and stats
-└── utils.ts             ← formatDate, statusClass, etc.
-
-types/
-└── index.ts             ← TypeScript types for Ticket, User, etc.
-```
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/auth/login` | Authenticate user and return access token |
+| `GET` | `/api/v1/tickets` | List tickets with optional `status`, `priority`, and `category` filters |
+| `GET` | `/api/v1/tickets/{id}` | Retrieve full details and AI triage output for a single ticket |
+| `POST` | `/api/v1/tickets` | Create a new ticket and enqueue it for AI classification |
+| `GET` | `/api/v1/tickets/stats` | Fetch aggregate ticket counts and priority/category breakdowns |
 
 ---
 
-## How the mock → real switch works
+## 🗄️ Supabase Table Schema (`tickets`)
 
-All data fetching goes through `lib/api.ts`. At the top of that file:
-
-```ts
-const USE_MOCK = true   // ← flip to false when backend is running
-```
-
-That single flag controls everything. When you flip it:
-- `getTickets()` calls `GET /api/v1/tickets` instead of returning mock data
-- `createTicket()` calls `POST /api/v1/tickets`
-- `login()` calls `POST /api/v1/auth/login`
-
-You don't change any page or component code — only the flag.
-
----
-
-## Key concepts to notice as you read the code
-
-**Route Groups `(app)`**
-The `(app)` folder name has parentheses — this is a Next.js route group.
-It doesn't affect URLs. `/dashboard` is still `/dashboard`.
-It just lets us wrap those pages in a shared layout (the sidebar).
-
-**`'use client'` directive**
-Pages that use `useState` or `useEffect` need this at the top.
-Without it, Next.js tries to render them on the server, which can't use browser APIs.
-
-**Loading states**
-Every page fetches data in `useEffect` and shows a skeleton while loading.
-This pattern is what you'll use with the real API too.
-
-**TypeScript types**
-All data shapes are defined in `types/index.ts`.
-When you connect the real backend, the types should match the Pydantic schemas exactly.
+| Column | Type | Notes |
+| :--- | :--- | :--- |
+| `id` | `uuid` | Primary key (`gen_random_uuid()`) |
+| `title` | `text` | Ticket subject |
+| `description` | `text` | Detailed issue description |
+| `status` | `text` | `'open' \| 'in_progress' \| 'resolved' \| 'closed'` |
+| `priority` | `text` | `'pending' \| 'low' \| 'medium' \| 'high' \| 'critical'` |
+| `category` | `text` | `'bug' \| 'feature' \| 'billing' \| 'support' \| 'other'` |
+| `ai_summary` | `text` | Nullable — populated by FastAPI AI triage worker |
+| `ai_category` | `text` | Nullable — AI-suggested category |
+| `ai_priority` | `text` | Nullable — AI-suggested priority |
+| `ai_processed` | `boolean` | Defaults to `false` until processed by AI worker |
+| `creator_id` | `uuid` | References `auth.users(id)` |
+| `assignee_id` | `uuid` | Nullable — assigned agent ID |
+| `created_at` | `timestamptz` | Defaults to `now()` |
+| `updated_at` | `timestamptz` | Defaults to `now()` |
 
 ---
 
-## Development commands
+## 🗺️ Roadmap
 
-```bash
-npm run dev          # Start dev server (hot reload)
-npm run build        # Build for production
-npm run type-check   # Check TypeScript without building
-npm run lint         # Run ESLint
-```
+- [x] Next.js 16 + Tailwind CSS v4 + shadcn/ui dark-amber design system
+- [x] Supabase SSR authentication, guest mode & local dev sandbox
+- [x] Ticket creation, multi-criteria filtering & live status updates
+- [ ] Deploy FastAPI + LLM background worker for automated ticket triage
+- [ ] Real-time Supabase subscriptions for live AI triage updates without page refresh
 
 ---
-<!-- 
-## What to build next (your milestones)
 
-**This week — get comfortable:**
-- [ ] Run `npm run dev` and explore the UI
-- [ ] Read through `lib/api.ts` — understand the mock pattern
-- [ ] Read `app/(app)/dashboard/page.tsx` — trace how stats flow from mock data to UI
-- [ ] Try adding a new mock ticket in `lib/mock-data.ts` and see it appear
+## 📄 License
 
-**Next week — wire up the backend:**
-- [ ] Get FastAPI running locally (see backend README)
-- [ ] Flip `USE_MOCK = false` in `lib/api.ts`
-- [ ] Register a user at `http://localhost:8000/docs`
-- [ ] Log in via the `/login` page and see real tickets
-
-**Week after — add features:**
-- [ ] Build the "Update Status" button on the ticket detail page
-- [ ] Add pagination to the ticket list
-- [ ] Show AI processing status with real-time polling -->
+This project is licensed under the **MIT License**.
