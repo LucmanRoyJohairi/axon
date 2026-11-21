@@ -103,7 +103,7 @@ triage-frontend/
 ---
 
 ## 🌐 Live Demo
-Try it live at **[axon-ticketing-system-two.vercel.app](https://vercel.app)** — click **Continue as Guest** on the login screen to explore the interactive sandbox.
+Try it live at **[axon-ticketing-system-two.vercel.app](https://axon-ticketing-system-two.vercel.app)** — click **Continue as Guest** on the login screen to explore the interactive sandbox.
 
 ## 🚀 Local Setup
 ```bash
