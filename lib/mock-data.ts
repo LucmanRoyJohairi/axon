@@ -1,14 +1,33 @@
 import type { Ticket, DashboardStats, User } from '@/types'
 
+const minsAgo = (m: number) => new Date(Date.now() - m * 60_000).toISOString()
+const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000).toISOString()
+
 export const MOCK_USER: User = {
   id: 'usr_01',
   email: 'zero@agency.dev',
   full_name: 'Zero',
   is_admin: true,
-  created_at: '2025-01-01T00:00:00Z',
+  created_at: hoursAgo(720),
 }
 
 export const MOCK_TICKETS: Ticket[] = [
+  {
+    id: 'tkt_05',
+    title: 'API rate limit too aggressive for batch imports',
+    description: 'The 100 req/min limit makes batch importing 10k+ records take hours. Can we get a higher limit or a bulk endpoint?',
+    status: 'open',
+    priority: null,
+    category: null,
+    ai_summary: null,
+    ai_category: null,
+    ai_priority: null,
+    ai_processed: false,
+    creator_id: 'usr_06',
+    assignee_id: null,
+    created_at: minsAgo(12),
+    updated_at: minsAgo(12),
+  },
   {
     id: 'tkt_01',
     title: 'Password reset email not being delivered',
@@ -22,8 +41,8 @@ export const MOCK_TICKETS: Ticket[] = [
     ai_processed: true,
     creator_id: 'usr_02',
     assignee_id: null,
-    created_at: '2025-05-07T08:12:00Z',
-    updated_at: '2025-05-07T08:14:00Z',
+    created_at: hoursAgo(2),
+    updated_at: hoursAgo(2),
   },
   {
     id: 'tkt_02',
@@ -38,13 +57,13 @@ export const MOCK_TICKETS: Ticket[] = [
     ai_processed: true,
     creator_id: 'usr_03',
     assignee_id: 'usr_01',
-    created_at: '2025-05-06T14:30:00Z',
-    updated_at: '2025-05-07T09:00:00Z',
+    created_at: hoursAgo(6),
+    updated_at: hoursAgo(1),
   },
   {
     id: 'tkt_03',
     title: 'Request: Dark mode for the dashboard',
-    description: "We use the dashboard all day and the bright white interface causes eye strain. Would love a dark mode toggle — even a simple one would go a long way.",
+    description: 'We use the dashboard all day and the bright white interface causes eye strain. Would love a dark mode toggle — even a simple one would go a long way.',
     status: 'open',
     priority: null,
     category: null,
@@ -54,8 +73,8 @@ export const MOCK_TICKETS: Ticket[] = [
     ai_processed: true,
     creator_id: 'usr_04',
     assignee_id: null,
-    created_at: '2025-05-06T11:00:00Z',
-    updated_at: '2025-05-06T11:00:00Z',
+    created_at: hoursAgo(14),
+    updated_at: hoursAgo(14),
   },
   {
     id: 'tkt_04',
@@ -70,24 +89,8 @@ export const MOCK_TICKETS: Ticket[] = [
     ai_processed: true,
     creator_id: 'usr_05',
     assignee_id: null,
-    created_at: '2025-05-05T16:45:00Z',
-    updated_at: '2025-05-05T16:45:00Z',
-  },
-  {
-    id: 'tkt_05',
-    title: 'API rate limit too aggressive for batch imports',
-    description: "The 100 req/min limit makes batch importing 10k+ records take hours. Can we get a higher limit or a bulk endpoint?",
-    status: 'open',
-    priority: null,
-    category: null,
-    ai_summary: null,
-    ai_category: null,
-    ai_priority: null,
-    ai_processed: false, // still being analyzed
-    creator_id: 'usr_06',
-    assignee_id: null,
-    created_at: '2025-05-07T10:05:00Z',
-    updated_at: '2025-05-07T10:05:00Z',
+    created_at: hoursAgo(26),
+    updated_at: hoursAgo(26),
   },
   {
     id: 'tkt_06',
@@ -102,17 +105,17 @@ export const MOCK_TICKETS: Ticket[] = [
     ai_processed: true,
     creator_id: 'usr_07',
     assignee_id: 'usr_01',
-    created_at: '2025-05-04T09:20:00Z',
-    updated_at: '2025-05-06T17:00:00Z',
+    created_at: hoursAgo(48),
+    updated_at: hoursAgo(18),
   },
 ]
 
 export const MOCK_STATS: DashboardStats = {
-  total_tickets: 24,
-  open_tickets: 14,
-  in_progress_tickets: 5,
-  resolved_tickets: 5,
-  ai_processed_tickets: 21,
-  tickets_by_priority: { critical: 2, high: 7, medium: 9, low: 5 },
-  tickets_by_category: { bug: 11, feature: 4, billing: 3, support: 4, other: 2 },
+  total_tickets: 6,
+  open_tickets: 4,
+  in_progress_tickets: 1,
+  resolved_tickets: 1,
+  ai_processed_tickets: 5,
+  tickets_by_priority: { critical: 1, high: 2, medium: 1, low: 1 },
+  tickets_by_category: { bug: 3, feature: 1, billing: 1, support: 0, other: 0 },
 }

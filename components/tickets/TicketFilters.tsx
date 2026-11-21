@@ -23,7 +23,7 @@ export default function TicketFilters({
 
   return (
     <div
-      className="flex flex-wrap items-center gap-3 mb-5 opacity-0 animate-fade-up stagger-1"
+      className="flex flex-wrap items-center gap-2.5 mb-6 opacity-0 animate-fade-up stagger-1"
       style={{ animationFillMode: 'forwards' }}
     >
       <FilterGroup
@@ -49,12 +49,12 @@ export default function TicketFilters({
       />
       {hasActiveFilters && (
         <Button
-          variant="outline"
-          size="xs"
+          variant="ghost"
+          size="sm"
           onClick={() => onChange({})}
-          className="text-ink-3 hover:text-ink border-border bg-transparent"
+          className="text-xs text-ink-2 hover:text-ink hover:bg-surface-2 h-8 px-2.5"
         >
-          Clear filters
+          Clear filters ×
         </Button>
       )}
     </div>
@@ -75,17 +75,17 @@ function FilterGroup<T extends string>({
   onSelect: (v: string | undefined) => void
 }) {
   return (
-    <div className="flex items-center gap-1.5 flex-wrap">
-      <span className="text-ink-3 text-xs">{label}:</span>
+    <div className="inline-flex items-center gap-1 bg-surface border border-border rounded-lg p-1 flex-wrap">
+      <span className="text-ink-3 text-xs font-medium px-2">{label}</span>
       {options.map((opt) => (
         <button
           key={opt}
           type="button"
           onClick={() => onSelect(value === opt ? undefined : opt)}
-          className={`px-2.5 py-1 rounded text-xs transition-all ${
+          className={`px-2.5 py-1 rounded-md text-[13px] transition-all ${
             value === opt
-              ? 'bg-accent/15 text-accent border border-accent/30'
-              : 'text-ink-3 border border-border hover:border-muted hover:text-ink-2'
+              ? 'bg-accent/15 text-accent font-medium border border-accent/30'
+              : 'text-ink-2 hover:text-ink hover:bg-surface-2 border border-transparent'
           }`}
         >
           {labelMap[opt]}
