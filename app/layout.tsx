@@ -1,7 +1,10 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
-import { DM_Sans, DM_Mono, Inter } from 'next/font/google' 
+import { DM_Sans, DM_Mono, Inter, Geist } from 'next/font/google' 
 import './globals.css'
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const body = DM_Sans({
   subsets: ['latin'],
@@ -30,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html 
       lang="en" 
-      className={`dark ${body.variable} ${display.variable} ${mono.variable}`}
+      className={cn("dark", body.variable, display.variable, mono.variable, "font-sans", geist.variable)}
       style={{ colorScheme: 'dark', backgroundColor: '#09090b' }}
     >
       <body className="bg-zinc-900 text-ink font-sans antialiased min-h-screen">
