@@ -102,41 +102,16 @@ triage-frontend/
 
 ---
 
-## 🚀 Getting Started
+## 🌐 Live Demo
+Try it live at **[axon-ticketing-system-two.vercel.app](https://vercel.app)** — click **Continue as Guest** on the login screen to explore the interactive sandbox.
 
-### 1. Prerequisites
-- **Node.js** `20.9+`
-- **npm** (or `pnpm` / `yarn`)
-- A **Supabase** project (optional if using Local Dev Mode)
-- **FastAPI Backend** running locally or deployed (optional — frontend runs standalone with Supabase or sandbox mode)
-
-### 2. Installation
+## 🚀 Local Setup
 ```bash
-git clone <your-repository-url>
-cd triage-frontend
-npm install
-```
-
-### 3. Environment Variables
-Create a `.env.local` file in the project root:
-
-```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# FastAPI Backend URL (default: http://localhost:8000/api/v1)
-NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-
-<!-- # Optional: Enable one-click local dev login without creating a Supabase user
-NEXT_PUBLIC_DEV_BYPASS_AUTH=true -->
-```
-
-### 4. Run the Development Server
-```bash
+git clone https://github.com
+cd axon && npm install
+cp .env.local.example .env.local
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser. Use **Enter Dev Mode →** or **Continue as Guest** on the login screen to explore the pre-seeded mock ticket sandbox immediately.
 
 ---
 
