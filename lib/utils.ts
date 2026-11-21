@@ -32,6 +32,7 @@ export const STATUS_LABEL: Record<TicketStatus, string> = {
 }
 
 export const PRIORITY_LABEL: Record<TicketPriority, string> = {
+  pending: 'Pending',
   low: 'Low',
   medium: 'Medium',
   high: 'High',
@@ -57,12 +58,14 @@ export function statusClass(status: TicketStatus): string {
 
 export function priorityClass(priority: TicketPriority): string {
   return cn('inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium', {
+    'bg-zinc-800 text-zinc-400 border border-zinc-700/60': priority === 'pending',
     'bg-zinc-700 text-zinc-300': priority === 'low',
     'bg-blue-500/15 text-blue-400': priority === 'medium',
     'bg-orange-500/15 text-orange-400': priority === 'high',
     'bg-red-500/15 text-red-400': priority === 'critical',
   })
 }
+
 
 export function categoryClass(category: TicketCategory): string {
   return cn('inline-flex items-center px-2 py-0.5 rounded text-xs font-medium', {
@@ -75,6 +78,7 @@ export function categoryClass(category: TicketCategory): string {
 }
 
 export const PRIORITY_DOT: Record<TicketPriority, string> = {
+  pending: 'bg-zinc-500',
   low: 'bg-zinc-400',
   medium: 'bg-blue-400',
   high: 'bg-orange-400',

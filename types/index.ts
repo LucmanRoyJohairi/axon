@@ -1,5 +1,5 @@
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed'
-export type TicketPriority = 'low' | 'medium' | 'high' | 'critical'
+export type TicketPriority = 'pending' | 'low' | 'medium' | 'high' | 'critical'
 export type TicketCategory = 'bug' | 'feature' | 'billing' | 'support' | 'other'
 
 export interface Ticket {
@@ -10,13 +10,13 @@ export interface Ticket {
   priority: TicketPriority | null
   category: TicketCategory | null
 
-  // AI-generated — null until the worker processes the ticket
+  // AI-generated fields (populated once triage worker runs)
   ai_summary: string | null
   ai_category: TicketCategory | null
   ai_priority: TicketPriority | null
   ai_processed: boolean
 
-  creator_id: string
+  creator_id: string | null
   assignee_id: string | null
   created_at: string
   updated_at: string
@@ -38,17 +38,4 @@ export interface DashboardStats {
   ai_processed_tickets: number
   tickets_by_priority: Record<string, number>
   tickets_by_category: Record<string, number>
-}
-
-export interface TicketListResponse {
-  tickets: Ticket[]
-  total: number
-  page: number
-  page_size: number
-}
-
-export interface AuthToken {
-  access_token: string
-  token_type: string
-  user: User
 }
